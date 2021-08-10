@@ -41,6 +41,7 @@ public class DemoApplication {
 			var query = new Query();
 			query.addCriteria(
 				new Criteria("age").gte(20).lt(100)
+				.and("firstName").is("Luis")
 			)
 			.fields()
 				.include("firstName")
