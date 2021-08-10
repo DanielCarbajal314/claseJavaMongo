@@ -2,7 +2,9 @@ package com.example.demo;
 
 import java.util.ArrayList;
 
+import com.example.demo.DTO.PersonAverageAge;
 import com.example.demo.DTO.PersonListItem;
+import com.example.demo.DTO.PersonReport;
 import com.example.demo.models.Course;
 import com.example.demo.models.Person;
 import com.example.demo.repository.CourseRepository;
@@ -55,21 +57,44 @@ public class DemoApplication {
 			// people.stream().forEach(person -> System.out.println(person));
 
 			//EJEMPLO DE AGREGACION
-			var matchCriteria = new Criteria("firstName").is("Luis");
-			MatchOperation match = Aggregation.match(matchCriteria);			
+			// var matchCriteria = new Criteria("firstName").is("Luis");
+			// MatchOperation match = Aggregation.match(matchCriteria);			
+			// ProjectionOperation projection = Aggregation.project()
+			// 	.and("firstName").as("personName")
+			// 	.and("_id").as("personId");
+			// var aggregation = Aggregation.newAggregation(match,projection);
+			// var result = mongoTemplate.aggregate(aggregation, "person", PersonListItem.class);
+			// var people = result.getMappedResults();
+			// people.stream().forEach(person -> {
+			// 	System.out.println(person.personId);
+			// 	System.out.println(person.personName);
+			// });
+
+			// var matchCriteria = new Criteria("firstName").is("Daniel");
+			// MatchOperation match = Aggregation.match(matchCriteria);	
+			// var group = Aggregation.group("firstName").avg("age").as("averageAge");
+			// ProjectionOperation projection = Aggregation.project()
+			// 	.and("_id").as("name")
+			// 	.and("averageAge").as("average");
+			// var aggregation = Aggregation.newAggregation(match,group,projection);
+			// var result = mongoTemplate.aggregate(aggregation, "person", PersonAverageAge.class);
+			// var people = result.getMappedResults();
+			// people.stream().forEach(person -> {
+			// 	System.out.println(person.name);
+			// 	System.out.println(person.average);
+			// });
+
+			var sortByCount = Aggregation.sortByCount("firstName");
 			ProjectionOperation projection = Aggregation.project()
-				.and("firstName").as("personName")
-				.and("_id").as("personId");
-			var aggregation = Aggregation.newAggregation(match,projection);
-			var result = mongoTemplate.aggregate(aggregation, "person", PersonListItem.class);
+				.and("_id").as("personName")
+				.and("count").as("amount");
+			var sortByCountAgregation = Aggregation.newAggregation(sortByCount,projection);
+			var result = mongoTemplate.aggregate(sortByCountAgregation, "person", PersonReport.class);
 			var people = result.getMappedResults();
 			people.stream().forEach(person -> {
-				System.out.println(person.personId);
 				System.out.println(person.personName);
+				System.out.println(person.amount);
 			});
-
-
-
 		};
 	}
 }
